@@ -157,7 +157,7 @@ class _FloatingViewState extends State<FloatingView>
       //滑动结束
       onPanEnd: (DragEndDetails details) {
         if (!_checkStartScroll()) return;
-        bool _needHide = details.velocity.pixelsPerSecond.dx <= 0;
+        bool _needHide = details.velocity.pixelsPerSecond.dx < 0;
         _changePosition();
         //停止后靠边操作
         _animateMovePosition(needHide: _needHide);
@@ -208,9 +208,9 @@ class _FloatingViewState extends State<FloatingView>
   }
 
   ///边界判断
-  _changePosition({bool needHide = false}) {
+  _changePosition() {
     //不能超过左边界
-    if (_left < 0) _left = needHide ? -14 : 0;
+    if (_left < 0) _left = 0;
     //不能超过右边界
     var w = _parentWidth;
     if (_left >= w - _width) {
