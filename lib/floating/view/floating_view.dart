@@ -157,9 +157,10 @@ class _FloatingViewState extends State<FloatingView>
       //滑动结束
       onPanEnd: (DragEndDetails details) {
         if (!_checkStartScroll()) return;
+        bool _needHide = details.velocity.pixelsPerSecond.dx <= 0;
         _changePosition();
         //停止后靠边操作
-        _animateMovePosition();
+        _animateMovePosition(needHide: _needHide);
       },
       //滑动取消
       onPanCancel: () {
@@ -207,9 +208,9 @@ class _FloatingViewState extends State<FloatingView>
   }
 
   ///边界判断
-  _changePosition() {
+  _changePosition({bool needHide = false}) {
     //不能超过左边界
-    if (_left < 0) _left = 0;
+    if (_left < 0) _left = needHide ? -14 : 0;
     //不能超过右边界
     var w = _parentWidth;
     if (_left >= w - _width) {
@@ -226,7 +227,7 @@ class _FloatingViewState extends State<FloatingView>
   }
 
   ///中线回弹动画
-  _animateMovePosition() {
+  _animateMovePosition({bool needHide = false}) {
     if (!widget.isSnapToEdge) {
       _recoverOpacity();
       _saveCacheData(_left, _top);
@@ -239,12 +240,17 @@ class _FloatingViewState extends State<FloatingView>
     switch (widget.slideStopType) {
       case SlideStopType.slideStopLeftType:
         needMoveLength = _left; //靠左边的距离
-        toPositionX = 0 + _floatingData.snapToEdgeSpace; //回到左边缘距离
+        toPositionX = needHide
+            ? -_width / 2 + _floatingData.snapToEdgeSpace
+            : 0 + _floatingData.snapToEdgeSpace; //回到左边缘距离或隐藏一半
         break;
       case SlideStopType.slideStopRightType:
         needMoveLength = (_parentWidth - _left - _width); //靠右边的距离
-        toPositionX =
-            _parentWidth - _width - _floatingData.snapToEdgeSpace; //回到右边缘距离
+        toPositionX = needHide
+            ? _parentWidth - _width / 2 - _floatingData.snapToEdgeSpace
+            : _parentWidth -
+                _width -
+                _floatingData.snapToEdgeSpace; //回到右边缘距离或隐藏一半
         break;
       case SlideStopType.slideStopAutoType:
         double centerX = _left + _width / 2.0; //中心点位置
@@ -254,10 +260,15 @@ class _FloatingViewState extends State<FloatingView>
           needMoveLength = (_parentWidth - _left - _width); //靠右边的距离
         }
         if (centerX <= _parentWidth / 2.0) {
-          toPositionX = 0 + _floatingData.snapToEdgeSpace; //回到左边缘
+          toPositionX = needHide
+              ? -_width / 2 + _floatingData.snapToEdgeSpace
+              : 0 + _floatingData.snapToEdgeSpace; //回到左边缘或隐藏一半
         } else {
-          toPositionX =
-              _parentWidth - _width - _floatingData.snapToEdgeSpace; //回到右边缘
+          toPositionX = needHide
+              ? _parentWidth - _width / 2 - _floatingData.snapToEdgeSpace
+              : _parentWidth -
+                  _width -
+                  _floatingData.snapToEdgeSpace; //回到右边缘或隐藏一半
         }
         break;
     }
