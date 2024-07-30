@@ -1,5 +1,6 @@
 name: flutter_floating
-description: Flutter privileges free suspension window, support global, single page suspension, support edge adsorption, position saving, up and down sliding area control and screen rotation window after the position repair and so on。
+description: Flutter privileges free suspension window, support global, single page suspension, support edge adsorption position saving, up and down sliding area control and screen rotation window after the position repair and so on.
+
 version: 1.0.9
 homepage: https://github.com/LvKang-insist/Floating
 
