@@ -157,7 +157,8 @@ class _FloatingViewState extends State<FloatingView>
       //滑动结束
       onPanEnd: (DragEndDetails details) {
         if (!_checkStartScroll()) return;
-        bool _needHide = details.velocity.pixelsPerSecond.dx < 0;
+        bool _needHide = details.velocity.pixelsPerSecond.dx < 0 ||
+            details.velocity.pixelsPerSecond.dx >= _parentWidth;
         _changePosition();
         //停止后靠边操作
         _animateMovePosition(needHide: _needHide);
